@@ -29,5 +29,5 @@ public class PlayerMove : MonoBehaviour
 
         // 3. 그 방향으로 움직이자. (P = P0 + vt)
         transform.position += dir * moveSpeed * Time.deltaTime;
-    }
+    }    
 }
