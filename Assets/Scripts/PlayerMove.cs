@@ -1,33 +1,82 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// ìŠ¤í˜ì´ìŠ¤ë°”ë¥¼ ëˆ„ë¥´ë©´ ì í”„ë¥¼ í•˜ê³  ì‹¶ë‹¤.
 
 public class PlayerMove : MonoBehaviour
 {
-    // ÀÌµ¿ ¼Ó·Â
+    // ì´ë™ ì†ë ¥
     public float moveSpeed = 5;
+    // Character Controller
+    public CharacterController cc;
+
+    // ì í”„íŒŒì›Œ
+    public float jumpPower = 3;
+    // ì¤‘ë ¥
+    float gravity = -9.81f;
+    // y ë°©í–¥ ì†ë ¥
+    float yVelocity;
+
+    // ìµœëŒ€ ì í”„ íšŸìˆ˜
+    public int jumpMaxCnt = 2;
+    // í˜„ì¬ ì í”„ íšŸìˆ˜
+    int jumpCurrCnt;
 
     void Start()
     {
-        
+        // Character Controller ê°€ì ¸ì˜¤ì
+        cc = GetComponent<CharacterController>();
     }
 
     void Update()
     {
-        // W, A, S, D Å°·Î ¾Õ, ¿Ş, µÚ, ¿À¸¥ À¸·Î ¿òÁ÷ÀÌ°Ô ÇÏÀÚ.
-        // 1. »ç¿ëÀÚÀÇ ÀÔ·ÂÀ» ¹ŞÀÚ (W, A, S, D Å° ÀÔ·Â)
-        float h = Input.GetAxis("Horizontal");  // A : -1, D : 1, ´©¸£Áö ¾ÊÀ¸¸é 0
-        float v = Input.GetAxis("Vertical");    // S : -1, W : 1, ´©¸£Áö ¾ÊÀ¸¸é 0
+        // W, A, S, D í‚¤ë¡œ ì•, ì™¼, ë’¤, ì˜¤ë¥¸ ìœ¼ë¡œ ì›€ì§ì´ê²Œ í•˜ì.
+        // 1. ì‚¬ìš©ìì˜ ì…ë ¥ì„ ë°›ì (W, A, S, D í‚¤ ì…ë ¥)
+        float h = Input.GetAxis("Horizontal");  // A : -1, D : 1, ëˆ„ë¥´ì§€ ì•Šìœ¼ë©´ 0
+        float v = Input.GetAxis("Vertical");    // S : -1, W : 1, ëˆ„ë¥´ì§€ ì•Šìœ¼ë©´ 0
 
-        // 2. ¹æÇâÀ» Á¤ÇÏÀÚ.
+        // 2. ë°©í–¥ì„ ì •í•˜ì.
         Vector3 dirH = transform.right * h;   
         Vector3 dirV = transform.forward * v;
         Vector3 dir =  dirH + dirV;
-        // dir ÀÇ Å©±â¸¦ 1·Î ¸¸µéÀÚ. (º¤ÅÍÀÇ Á¤±ÔÈ­)
-        dir.Normalize();        
+        // dir ì˜ í¬ê¸°ë¥¼ 1ë¡œ ë§Œë“¤ì. (ë²¡í„°ì˜ ì •ê·œí™”)
+        dir.Normalize();
 
-        // 3. ±× ¹æÇâÀ¸·Î ¿òÁ÷ÀÌÀÚ. (P = P0 + vt)
-        transform.position += dir * moveSpeed * Time.deltaTime;
+        // dir ì— speed ê³±í•˜ì.
+        //dir *= moveSpeed;
+
+        // ë§Œì•½ì— ë•…ì— ìˆë‹¤ë©´ yVelocity ë¥¼ 0ìœ¼ë¡œ ì´ˆê¸°í™”
+        if (cc.isGrounded)
+        {
+            yVelocity = 0;
+            jumpCurrCnt = 0;
+        }
+
+        // ë§Œì•½ì— ìŠ¤í˜ì´ìŠ¤ë°”ë¥¼ ëˆ„ë¥´ë©´
+        if (Input.GetButtonDown("Jump"))
+        //if(Input.GetKeyDown(KeyCode.Space))
+        {
+            // ë§Œì•½ì— í˜„ì¬ ì í”„ íšŸìˆ˜ê°€ ìµœëŒ€ ì í”„ íšŸìˆ˜ ë³´ë‹¤ ì‘ìœ¼ë©´
+            if(jumpCurrCnt < jumpMaxCnt)
+            {
+                // yVelocity ì— jumpPower ë¥¼ ì…‹íŒ…
+                yVelocity = jumpPower;
+                // í˜„ì¬ ì í”„ íšŸìˆ˜ë¥¼ ì¦ê°€ ì‹œí‚¤ì.
+                jumpCurrCnt++;
+            }
+        }
+        // yVelocity ë¥¼ ì¤‘ë ¥ê°’ì„ ì´ìš©í•´ì„œ ê°ì†Œì‹œí‚¨ë‹¤. 
+        // v = v0 + at;
+        yVelocity += gravity * Time.deltaTime;
+
+       
+
+        // dir.y ê°’ì— yVelocity ë¥¼ ì…‹íŒ…
+        dir.y = yVelocity;
+
+        // 3. ê·¸ ë°©í–¥ìœ¼ë¡œ ì›€ì§ì´ì. (P = P0 + vt)
+        //transform.position += dir * moveSpeed * Time.deltaTime;
+        cc.Move(dir * moveSpeed * Time.deltaTime);
     }    
 }

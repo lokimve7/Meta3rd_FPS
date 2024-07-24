@@ -1,14 +1,18 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjRotate : MonoBehaviour
 {
-    // È¸Àü ¼Ó·Â
+    // íšŒì „ ì†ë ¥
     public float rotSpeed = 200;
-    // È¸Àü °ª
-    float rotY;
+    // íšŒì „ ê°’
     float rotX;
+    float rotY;
+
+    // íšŒì „ í—ˆìš©
+    public bool useRotX;
+    public bool useRotY;
 
     void Start()
     {
@@ -17,19 +21,78 @@ public class ObjRotate : MonoBehaviour
 
     void Update()
     {
-        // ¸¶¿ì½º ¿òÁ÷ÀÓ°ªÀ» ¹Ş¾Æ¿ÀÀÚ.
+        // ë§ˆìš°ìŠ¤ ì›€ì§ì„ê°’ì„ ë°›ì•„ì˜¤ì.
         float mx = Input.GetAxis("Mouse X");
         float my = Input.GetAxis("Mouse Y");
 
-        // È¸Àü °¢µµ¸¦ ´©Àû
-        rotY += mx * rotSpeed * Time.deltaTime;
-        rotX += my * rotSpeed * Time.deltaTime;
+        // íšŒì „ ê°ë„ë¥¼ ëˆ„ì 
+        if(useRotY)   rotY += mx * rotSpeed * Time.deltaTime;        
+        if(useRotX)   rotX += my * rotSpeed * Time.deltaTime;
 
-        // rotX ÀÇ °ªÀÇ -80 ~ 80 µµ·Î Á¦ÇÑ (ÃÖ¼Ò°ª, ÃÖ´ë°ª)
+        // rotX ì˜ ê°’ì˜ -80 ~ 80 ë„ë¡œ ì œí•œ (ìµœì†Œê°’, ìµœëŒ€ê°’)
         rotX = Mathf.Clamp(rotX, -80, 80);
 
-        // ¹°Ã¼¸¦ È¸Àü °¢µµ·Î ¼ÂÆÃ ÇÏÀÚ.
+        // ë¬¼ì²´ë¥¼ íšŒì „ ê°ë„ë¡œ ì…‹íŒ… í•˜ì.
         transform.localEulerAngles = new Vector3(-rotX, rotY, 0);
     }
+
+    #region ë ˆí¼ëŸ°ìŠ¤ íƒ€ì…ê³¼ value íƒ€ì…ì˜ ê²½ìš° ë°˜í™˜ë˜ì—ˆì„ ë•Œ ë©¤ë²„ë³€ìˆ˜ ì ‘ê·¼ í—ˆìš© / ë¹„í—ˆìš©
+    void TestFunc()
+    {
+        MyTransform myTransform = new MyTransform();
+        myTransform.position = new MyVector3(10, 10, 10);
+        print(myTransform.position);
+
+        myTransform.SetVector(new MyVector3(10, 10, 10));
+        print(myTransform.GetVector().x);
+        MyVector3 vec = myTransform.GetVector();
+        vec.x = 10;
+        //myTransform.position ;
+    }
+    #endregion
 }
+
+#region ë ˆí¼ëŸ°ìŠ¤ íƒ€ì…ê³¼ value íƒ€ì…ì˜ ê²½ìš° ë°˜í™˜ë˜ì—ˆì„ ë•Œ ë©¤ë²„ë³€ìˆ˜ ì ‘ê·¼ í—ˆìš© / ë¹„í—ˆìš©
+public class MyTransform
+{
+    public MyVector3 originPosition;
+
+    public MyVector3 position
+    {
+        get
+        {
+            return originPosition;
+        }
+        set
+        {
+            originPosition = value;
+        }
+    }
+
+    public MyVector3 GetVector()
+    {
+        int number = 10;
+        return originPosition;
+    }
+    public void SetVector(MyVector3 value)
+    {
+        originPosition = value;
+    }
+}
+
+public struct MyVector3
+{
+    public MyVector3(int _x, int _y, int _z)
+    {
+        x = _x;
+        y = _y;
+        z = _z;
+    }
+
+    public float x;
+    public float y;
+    public float z;    
+}
+#endregion
+
 
