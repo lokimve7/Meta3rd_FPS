@@ -39,22 +39,24 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        Click_Move();
+        WASD_Move();
 
-        if(canMove)
-        {
-            // 움직일 수 있는 거리를 줄여나가자.
-            moveDist -= moveSpeed * Time.deltaTime;
-            // 만약에 moveDist 가 0보다 같거나 작으면
-            if(moveDist <= 0)
-            {
-                // 움직이지 않게 하자.
-                canMove = false;
-            }
+        //Click_Move();
 
-            // dir 방향으로 움직이자.
-            cc.Move(moveDir * moveSpeed * Time.deltaTime);
-        }
+        //if(canMove)
+        //{
+        //    // 움직일 수 있는 거리를 줄여나가자.
+        //    moveDist -= moveSpeed * Time.deltaTime;
+        //    // 만약에 moveDist 가 0보다 같거나 작으면
+        //    if(moveDist <= 0)
+        //    {
+        //        // 움직이지 않게 하자.
+        //        canMove = false;
+        //    }
+
+        //    // dir 방향으로 움직이자.
+        //    cc.Move(moveDir * moveSpeed * Time.deltaTime);
+        //}
     }  
 
     void Click_Move()
