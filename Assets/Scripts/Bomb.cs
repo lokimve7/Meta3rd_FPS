@@ -49,9 +49,6 @@ public class Bomb : MonoBehaviour
             Destroy(colliders[i].gameObject);
         }
 
-       
-        
-
         // 나를 파괴하자
         Destroy(gameObject);
     }
