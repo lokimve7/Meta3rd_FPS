@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IAnimationInterface
 {
     // 상태 enum (열거형)
     public enum EEnemyState
@@ -11,6 +12,7 @@ public class Enemy : MonoBehaviour
         IDLE,
         MOVE,
         ATTACK,
+        ATTACK_DELAY,
         DAMAGE,
         DIE
     }
@@ -34,10 +36,15 @@ public class Enemy : MonoBehaviour
     // 공격 Delay 시간
     public float attakDelayTime = 2;
 
+    Animator anim;
+
     void Start()
     {
         // Player 어 찾아오자.
         player = GameObject.Find("Player");
+
+        anim = GetComponentInChildren<Animator>();
+        
     }
 
     void Update()
@@ -54,7 +61,10 @@ public class Enemy : MonoBehaviour
                 break;
 
             case EEnemyState.ATTACK:
-                UpdateAttack();
+                Attack();
+                break;
+            case EEnemyState.ATTACK_DELAY:
+                UpdateAttackDelay();
                 break;
 
             case EEnemyState.DAMAGE:
@@ -64,6 +74,7 @@ public class Enemy : MonoBehaviour
                 break;
         }
     }
+    
 
     // 상태가 전환 될 때 한번만 실행하는 동작
     void ChangeState(EEnemyState state)
@@ -76,12 +87,14 @@ public class Enemy : MonoBehaviour
 
         // 현재시간을 초기화
         currTime = 0;
-
+        
         switch(currState)
         {
             case EEnemyState.ATTACK:
-                currTime = attakDelayTime;
-                break;
+            case EEnemyState.IDLE:
+            case EEnemyState.MOVE:
+                anim.SetTrigger(currState.ToString());
+                break;            
         }
     }
 
@@ -105,11 +118,15 @@ public class Enemy : MonoBehaviour
         // Player 와의 거리를 구하자.
         float dist = Vector3.Distance(player.transform.position, transform.position);
         // 그 거리가 공격범위 보다 작으면
-        if(dist < attakRange)
+        if (dist < attakRange)
         {
             // 상태를 공격상태로 전환
             ChangeState(EEnemyState.ATTACK);
-            
+
+        }
+        else if (dist > traceRange)
+        {
+            ChangeState(EEnemyState.IDLE);
         }
         // 그렇지 않으면
         else
@@ -126,17 +143,59 @@ public class Enemy : MonoBehaviour
     }
 
     // 공격 상태일때 계속 해야 하는 동작
-    void UpdateAttack()
+    void Attack()
+    {
+        // 플레어를 공격하자.
+        print("공격! 공격!");
+        ChangeState(EEnemyState.ATTACK_DELAY);
+    }
+
+    private void UpdateAttackDelay()
     {
         // 시간을 흐르게 하자.
         currTime += Time.deltaTime;
         // 공격 Delay 시간만큼 기다렸다가
-        if(currTime > attakDelayTime)
+        if (currTime > attakDelayTime)
         {
-            // 플레어를 공격하자.
-            print("공격! 공격!");
             // 현재 시간 초기화
             currTime = 0;
+            float dist = Vector3.Distance(player.transform.position, transform.position);
+            if(dist < attakRange)
+            {
+                ChangeState(EEnemyState.ATTACK);
+            }
+            else if(dist < traceRange)
+            {
+                ChangeState(EEnemyState.MOVE);
+            }
+            else
+            {
+                ChangeState(EEnemyState.IDLE);
+            }
+        }
+    }
+
+    public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        if (stateInfo.IsName("IDLE"))
+        {
+            Debug.Log("IDLE - Enter");
+        }
+        else if (stateInfo.IsName("MOVE"))
+        {
+            Debug.Log("MOVE - Enter");
+        }
+    }
+
+    public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        if (stateInfo.IsName("IDLE"))
+        {
+            Debug.Log("IDLE - Exit");
+        }
+        else if (stateInfo.IsName("MOVE"))
+        {
+            Debug.Log("MOVE - Exit");
         }
     }
 }
