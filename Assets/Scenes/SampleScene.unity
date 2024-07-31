@@ -176,6 +176,7 @@ MonoBehaviour:
   cc: {fileID: 149812921}
   jumpPower: 3
   jumpMaxCnt: 2
+  model: {fileID: 1052233603}
 --- !u!114 &149812918
 MonoBehaviour:
   m_ObjectHideFlags: 0
