@@ -40,6 +40,11 @@ public class Enemy : MonoBehaviour
     {
         // Player 어 찾아오자.
         player = GameObject.Find("Player");
+
+        // HPSystem 을 가져오자.
+        HPSystem hpSystem = GetComponent<HPSystem>();
+        // 가져온 컴포넌트에서 OnDie 함수를 등록
+        hpSystem.onDie = OnDie;
     }
 
     void Update()
@@ -64,12 +69,13 @@ public class Enemy : MonoBehaviour
                 break;
 
             case EEnemyState.DIE:
+                UpdateDie();
                 break;
         }
     }
 
     // 상태가 전환 될 때 한번만 실행하는 동작
-    void ChangeState(EEnemyState state)
+    public void ChangeState(EEnemyState state)
     {
         // 이전 상태 -> 현재 상태
         print(currState + " ----> " + state);
@@ -89,6 +95,12 @@ public class Enemy : MonoBehaviour
                 { 
                     HPSystem hpSystem = GetComponent<HPSystem>();
                     hpSystem.UpdateHP(-1);
+                }
+                break;
+            case EEnemyState.DIE:
+                {
+                    CapsuleCollider coll = GetComponent<CapsuleCollider>();
+                    coll.enabled = false;
                 }
                 break;
         }
@@ -144,8 +156,11 @@ public class Enemy : MonoBehaviour
             float dist = Vector3.Distance(player.transform.position, transform.position);
             if (dist < attakRange)
             {
-                // 플레어를 공격하자.
-                print("공격! 공격!");               
+                // 플레이어를 공격하자.
+                print("공격! 공격!");
+                // 플레이어 HP 줄이자.
+                HPSystem hpSystem = player.GetComponent<HPSystem>();
+                hpSystem.UpdateHP(-2);
             }
             // 그렇지 않고 인지범위 보다 작으면
             else if (dist < traceRange)
@@ -197,6 +212,27 @@ public class Enemy : MonoBehaviour
     {
         // 상태를 Damage 로 전환
         ChangeState(EEnemyState.DAMAGE);
+    }
+
+    // 내려가는 속력
+    public float downSpeed = 3;
+    // 내려가는 동안 기다려야하는 시간
+    public float dieDelayTime = 2;
+
+    void OnDie()
+    {
+        ChangeState(EEnemyState.DIE);
+    }
+
+    void UpdateDie()
+    {
+        // 밑으로 내려가자.
+        transform.position += Vector3.down * downSpeed * Time.deltaTime;
+        // 2초 뒤에 없어지자.
+        if(IsDelayComplete(dieDelayTime))
+        {
+            Destroy(gameObject);
+        }
     }
 
     bool IsDelayComplete(float delayTime)

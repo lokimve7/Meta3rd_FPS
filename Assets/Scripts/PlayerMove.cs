@@ -35,6 +35,11 @@ public class PlayerMove : MonoBehaviour
     {
         // Character Controller 가져오자
         cc = GetComponent<CharacterController>();
+
+        // HPSystem 을 가져오자.
+        HPSystem hpSystem = GetComponent<HPSystem>();
+        // 가져온 컴포넌트에서 Die 함수를 등록
+        hpSystem.onDie = Die;
     }
 
     void Update()
@@ -131,5 +136,12 @@ public class PlayerMove : MonoBehaviour
         // 3. 그 방향으로 움직이자. (P = P0 + vt)
         //transform.position += dir * moveSpeed * Time.deltaTime;
         cc.Move(dir * moveSpeed * Time.deltaTime);
+    }
+
+    public GameObject model;
+    public void Die()
+    {
+        // Model 게임오브젝트를 비활성화
+        model.SetActive(false);
     }
 }

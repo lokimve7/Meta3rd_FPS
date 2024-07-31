@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 149812917}
   - component: {fileID: 149812922}
   - component: {fileID: 149812918}
+  - component: {fileID: 149812923}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -156,7 +157,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1052233604}
-  - {fileID: 1607855176}
   - {fileID: 330585546}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -235,6 +235,19 @@ MonoBehaviour:
     m_Bits: 951
   bombFactory: {fileID: 6522120467678943997, guid: acd68ebefa61c524fb175a1fc98b4118,
     type: 3}
+--- !u!114 &149812923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149812915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 990e380b42ee6374fa39c8530ed18b53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 3
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,7 +910,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1607855176}
   m_Father: {fileID: 149812916}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1052233606
@@ -1232,12 +1246,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1607855175}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.258, z: 0.352}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.25800002, z: 0.35200024}
   m_LocalScale: {x: 1, y: 0.44167, z: 0.62522}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 149812916}
+  m_Father: {fileID: 1052233604}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1607855178
 MeshRenderer:
@@ -1841,6 +1855,8 @@ MonoBehaviour:
   moveSpeed: 3
   attakDelayTime: 2
   damageDelay: 1
+  downSpeed: 3
+  dieDelayTime: 2
 --- !u!136 &2004760398
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1876,6 +1892,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 990e380b42ee6374fa39c8530ed18b53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHP: 3
 --- !u!1 &2063656093
 GameObject:
   m_ObjectHideFlags: 0
