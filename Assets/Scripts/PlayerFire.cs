@@ -66,6 +66,15 @@ public class PlayerFire : MonoBehaviour
             // 파편효과를 2초뒤에 파괴하자.
             Destroy(bulletImpact, 2);
 
+            // 만약에 총에 맞은 오브젝트가 Enemy 라면
+            if(hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                // Enemy 컴포넌트 가져오자.
+                Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
+                // 가져온 컴포넌트의 OnDamaged 함수를 실행
+                enemy.OnDamaged();
+            }
+
             // 부딪힌 오브젝트의 이름과, 부딪힌 위치를 출력해보자.
             //print(hitInfo.transform.name + ", " + hitInfo.point);
             //print(hitInfo.transform.name + ", " + hitInfo.transform.position);

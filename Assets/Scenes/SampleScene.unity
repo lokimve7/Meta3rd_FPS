@@ -232,7 +232,7 @@ MonoBehaviour:
   bulletImpactFactory: {fileID: 100002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
   layerMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 951
   bombFactory: {fileID: 6522120467678943997, guid: acd68ebefa61c524fb175a1fc98b4118,
     type: 3}
 --- !u!1 &330585543
@@ -961,7 +961,7 @@ GameObject:
   - component: {fileID: 1277947536}
   - component: {fileID: 1277947538}
   - component: {fileID: 1277947537}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: Eye (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1796,8 +1796,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2004760396}
+  - component: {fileID: 2004760398}
   - component: {fileID: 2004760397}
-  m_Layer: 0
+  - component: {fileID: 2004760399}
+  m_Layer: 9
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1835,7 +1837,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currState: 0
   traceRange: 8
+  attakRange: 2
   moveSpeed: 3
+  attakDelayTime: 2
+  damageDelay: 1
+--- !u!136 &2004760398
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2004760395}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &2004760399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2004760395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 990e380b42ee6374fa39c8530ed18b53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2063656093
 GameObject:
   m_ObjectHideFlags: 0
@@ -1847,8 +1887,7 @@ GameObject:
   - component: {fileID: 2063656094}
   - component: {fileID: 2063656097}
   - component: {fileID: 2063656096}
-  - component: {fileID: 2063656095}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1870,29 +1909,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2004760396}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &2063656095
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2063656093}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2063656096
 MeshRenderer:
   m_ObjectHideFlags: 0
