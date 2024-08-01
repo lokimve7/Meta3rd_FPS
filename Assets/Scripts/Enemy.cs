@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class Enemy : MonoBehaviour
         IDLE,
         MOVE,
         ATTACK,
+        ATTACK_DELAY,
         DAMAGE,
         DIE
     }
@@ -67,16 +69,21 @@ public class Enemy : MonoBehaviour
             case EEnemyState.ATTACK:
                 UpdateAttack();
                 break;
+            case EEnemyState.ATTACK_DELAY:
+                UpdateAttackDelay();
+                break;
 
             case EEnemyState.DAMAGE:
                 UpdateDamage();
                 break;
 
             case EEnemyState.DIE:
-                UpdateDie();
+                //UpdateDie();
                 break;
         }
     }
+
+   
 
     // 상태가 전환 될 때 한번만 실행하는 동작
     public void ChangeState(EEnemyState state)
@@ -92,26 +99,31 @@ public class Enemy : MonoBehaviour
 
         switch(currState)
         {
+            case EEnemyState.IDLE:
+                anim.SetTrigger("IDLE");
+                break;
             case EEnemyState.MOVE:
                 // 현재 상태의 Animation 을 실행
                 // animator 에게 현재 상태의 Trigger 를 발생
-                anim.SetTrigger(currState.ToString());
+                anim.SetTrigger("MOVE");
                 break;
 
             case EEnemyState.ATTACK:
-                currTime = attakDelayTime;
                 //anim.SetTrigger(currState.ToString());
                 break;
             case EEnemyState.DAMAGE:
                 { 
                     HPSystem hpSystem = GetComponent<HPSystem>();
                     hpSystem.UpdateHP(-1);
+                    anim.SetTrigger("DAMAGE");
                 }
                 break;
             case EEnemyState.DIE:
                 {
                     CapsuleCollider coll = GetComponent<CapsuleCollider>();
                     coll.enabled = false;
+
+                    anim.SetTrigger("DIE");
                 }
                 break;
         }
@@ -159,34 +171,47 @@ public class Enemy : MonoBehaviour
 
     // 공격 상태일때 계속 해야 하는 동작
     void UpdateAttack()
-    {        
-        // 공격 Delay 시간만큼 기다렸다가
-        if(IsDelayComplete(attakDelayTime))
+    {
+        // 플레이어를 공격하자.
+        print("공격! 공격!");
+        // 플레이어 HP 줄이자.
+        HPSystem hpSystem = player.GetComponent<HPSystem>();
+        hpSystem.UpdateHP(-2);
+        // 공격 Animation 실행
+        anim.SetTrigger(currState.ToString());
+
+        // 상태를 ATTACK_DELAY 상태로 전환
+        ChangeState(EEnemyState.ATTACK_DELAY);        
+    }
+
+    void DecideStateByDist()
+    {
+        // 만약에 Player 와 거리가 attakRange 보다 작으면
+        float dist = Vector3.Distance(player.transform.position, transform.position);
+        if (dist < attakRange)
         {
-            // 만약에 Player 와 거리가 attakRange 보다 작으면
-            float dist = Vector3.Distance(player.transform.position, transform.position);
-            if (dist < attakRange)
-            {
-                // 플레이어를 공격하자.
-                print("공격! 공격!");
-                // 플레이어 HP 줄이자.
-                HPSystem hpSystem = player.GetComponent<HPSystem>();
-                hpSystem.UpdateHP(-2);
-                // 공격 Animation 실행
-                anim.SetTrigger(currState.ToString());
-            }
-            // 그렇지 않고 인지범위 보다 작으면
-            else if (dist < traceRange)
-            {
-                // 이동 상태로 전환
-                ChangeState(EEnemyState.MOVE);
-            }
-            // 그렇지 않고 인지범위 보다 크면
-            else
-            {
-                // 대기상태로 전환
-                ChangeState(EEnemyState.IDLE);
-            }
+            ChangeState(EEnemyState.ATTACK);
+        }
+        // 그렇지 않고 인지범위 보다 작으면
+        else if (dist < traceRange)
+        {
+            // 이동 상태로 전환
+            ChangeState(EEnemyState.MOVE);
+        }
+        // 그렇지 않고 인지범위 보다 크면
+        else
+        {
+            // 대기상태로 전환
+            ChangeState(EEnemyState.IDLE);
+        }
+    }
+
+    private void UpdateAttackDelay()
+    {
+        // 공격 Delay 시간만큼 기다렸다가
+        if (IsDelayComplete(attakDelayTime))
+        {
+            DecideStateByDist();
         }
     }
 
@@ -198,26 +223,7 @@ public class Enemy : MonoBehaviour
         // 피격 시간 만큼 기다렸다가        
         if(IsDelayComplete(damageDelay))
         {
-            // 나의 행동을 결정하자.
-            // 만약에 Player 와 거리가 attakRange 보다 작으면
-            float dist = Vector3.Distance(player.transform.position, transform.position);
-            if (dist < attakRange)
-            {
-                // 공격상태로 전환
-                ChangeState(EEnemyState.ATTACK);
-            }
-            // 그렇지 않고 인지범위 보다 작으면
-            else if (dist < traceRange)
-            {
-                // 이동 상태로 전환
-                ChangeState(EEnemyState.MOVE);
-            }
-            // 그렇지 않고 인지범위 보다 크면
-            else
-            {
-                // 대기상태로 전환
-                ChangeState(EEnemyState.IDLE);
-            }
+            DecideStateByDist();
         }
     }
 
