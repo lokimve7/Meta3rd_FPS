@@ -34,12 +34,16 @@ public class Enemy : MonoBehaviour
     // 공격 Delay 시간
     public float attakDelayTime = 2;
 
-   
+    // Animator
+    Animator anim;
 
     void Start()
     {
         // Player 어 찾아오자.
         player = GameObject.Find("Player");
+
+        // 자식에 있는 Animator 찾아오자.
+        anim = GetComponentInChildren<Animator>();
 
         // HPSystem 을 가져오자.
         HPSystem hpSystem = GetComponent<HPSystem>();
@@ -88,8 +92,15 @@ public class Enemy : MonoBehaviour
 
         switch(currState)
         {
+            case EEnemyState.MOVE:
+                // 현재 상태의 Animation 을 실행
+                // animator 에게 현재 상태의 Trigger 를 발생
+                anim.SetTrigger(currState.ToString());
+                break;
+
             case EEnemyState.ATTACK:
                 currTime = attakDelayTime;
+                //anim.SetTrigger(currState.ToString());
                 break;
             case EEnemyState.DAMAGE:
                 { 
@@ -161,6 +172,8 @@ public class Enemy : MonoBehaviour
                 // 플레이어 HP 줄이자.
                 HPSystem hpSystem = player.GetComponent<HPSystem>();
                 hpSystem.UpdateHP(-2);
+                // 공격 Animation 실행
+                anim.SetTrigger(currState.ToString());
             }
             // 그렇지 않고 인지범위 보다 작으면
             else if (dist < traceRange)
