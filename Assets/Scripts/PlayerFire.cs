@@ -14,6 +14,8 @@ public class PlayerFire : MonoBehaviour
     // 폭탄 공장(Prefab)
     public GameObject bombFactory;
 
+    public Animator anim;
+
     void Start()
     {
         
@@ -32,6 +34,21 @@ public class PlayerFire : MonoBehaviour
         {
             FireBomb();
         }
+
+        if(Input.GetMouseButtonDown(1))
+        {
+            anim.SetBool("isAim", true);
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            anim.SetBool("isAim", false);
+        }
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            anim.SetTrigger("Reload");
+        }
+
     }
 
     void FireBomb()
@@ -46,6 +63,13 @@ public class PlayerFire : MonoBehaviour
 
     void FireRay()
     {
+        string fireName = "A_FP_PCH_AR_Fire";
+        if(anim.GetBool("isAim"))
+        {
+            fireName = "A_FP_PCH_AR_Aim_Fire";
+        }
+        anim.CrossFade(fireName, 0, 0, 0);
+
         // 카메라 위치에서 카메라 앞방향으로 향하는 Ray 를 만들자.
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 
@@ -70,7 +94,7 @@ public class PlayerFire : MonoBehaviour
             if(hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 // Enemy 컴포넌트 가져오자.
-                Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
+                StateManager enemy = hitInfo.transform.GetComponent<StateManager>();
                 // 가져온 컴포넌트의 OnDamaged 함수를 실행
                 enemy.OnDamaged();
             }

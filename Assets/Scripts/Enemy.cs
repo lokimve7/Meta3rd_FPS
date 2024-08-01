@@ -14,7 +14,8 @@ public class Enemy : MonoBehaviour
         ATTACK,
         ATTACK_DELAY,
         DAMAGE,
-        DIE
+        DIE,
+        MAX
     }
 
     // 현재 상태   

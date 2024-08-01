@@ -31,6 +31,9 @@ public class PlayerMove : MonoBehaviour
     // 움직여야 하는 거리
     float moveDist;
 
+    public Animator anim;
+
+
     void Start()
     {
         // Character Controller 가져오자
@@ -102,6 +105,10 @@ public class PlayerMove : MonoBehaviour
         Vector3 dir = dirH + dirV;
         // dir 의 크기를 1로 만들자. (벡터의 정규화)
         dir.Normalize();
+
+        
+        anim.SetBool("isRun", dir.sqrMagnitude > 0);
+       
 
         // dir 에 speed 곱하자.
         //dir *= moveSpeed;
