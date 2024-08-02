@@ -155,6 +155,10 @@ public class Enemy : MonoBehaviour
             ChangeState(EEnemyState.ATTACK);
             
         }
+        else if(dist > traceRange)
+        {
+            ChangeState(EEnemyState.IDLE);
+        }
         // 그렇지 않으면
         else
         {
