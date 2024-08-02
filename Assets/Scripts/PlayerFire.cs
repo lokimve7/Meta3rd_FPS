@@ -7,6 +7,8 @@ public class PlayerFire : MonoBehaviour
 {
     // 총알 파편 효과 공장(Prefab)
     public GameObject bulletImpactFactory;
+    public GameObject cartridgeFactory;
+    public Transform cartridgeTransform;
 
     // Raycast를 이용한 총알 발사에 검출되는 Layer 설정
     public LayerMask layerMask;
@@ -15,6 +17,7 @@ public class PlayerFire : MonoBehaviour
     public GameObject bombFactory;
 
     public Animator anim;
+    public Animator arAnim;
 
     void Start()
     {
@@ -47,6 +50,7 @@ public class PlayerFire : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.R))
         {
             anim.SetTrigger("Reload");
+            arAnim.SetTrigger("Reload");
         }
 
     }
@@ -68,7 +72,10 @@ public class PlayerFire : MonoBehaviour
         {
             fireName = "A_FP_PCH_AR_Aim_Fire";
         }
-        anim.CrossFade(fireName, 0, 0, 0);
+        anim.CrossFade(fireName, 0.02f, 0, 0);
+        arAnim.CrossFade("A_WEP_AR_01_Fire", 0, 0, 0);
+
+        Instantiate(cartridgeFactory, cartridgeTransform.position, cartridgeTransform.rotation);
 
         // 카메라 위치에서 카메라 앞방향으로 향하는 Ray 를 만들자.
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
