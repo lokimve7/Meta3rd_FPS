@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class Enemy : MonoBehaviour
     public float traceRange = 8;
     // 공격 범위
     public float attakRange = 2;
+    // 시야각
+    public float viewAngle = 45;
 
     // 이동 속력
     public float moveSpeed = 3;
@@ -39,6 +42,9 @@ public class Enemy : MonoBehaviour
     // Animator
     Animator anim;
 
+    // Nav Mesh Agent
+    NavMeshAgent nav;
+
     void Start()
     {
         // Player 어 찾아오자.
@@ -46,6 +52,10 @@ public class Enemy : MonoBehaviour
 
         // 자식에 있는 Animator 찾아오자.
         anim = GetComponentInChildren<Animator>();
+
+        // Nav Mesh Agent 컴포넌트 가져오자
+        nav = GetComponent<NavMeshAgent>();
+        nav.speed = moveSpeed;
 
         // HPSystem 을 가져오자.
         HPSystem hpSystem = GetComponent<HPSystem>();
@@ -97,6 +107,9 @@ public class Enemy : MonoBehaviour
         // 현재시간을 초기화
         currTime = 0;
 
+        // 길찾기 이동하는 것 멈춰
+        nav.isStopped = true;
+
         switch(currState)
         {
             case EEnemyState.IDLE:
@@ -106,6 +119,7 @@ public class Enemy : MonoBehaviour
                 // 현재 상태의 Animation 을 실행
                 // animator 에게 현재 상태의 Trigger 를 발생
                 anim.SetTrigger("MOVE");
+                nav.isStopped = false;
                 break;
 
             case EEnemyState.ATTACK:
@@ -122,7 +136,6 @@ public class Enemy : MonoBehaviour
                 {
                     CapsuleCollider coll = GetComponent<CapsuleCollider>();
                     coll.enabled = false;
-
                     anim.SetTrigger("DIE");
                 }
                 break;
@@ -137,9 +150,15 @@ public class Enemy : MonoBehaviour
         // 만약에 그 거리가 인지범위 보다 작으면
         if(dist < traceRange)
         {
-            // MOVE 상태로 전환
-
-            ChangeState(EEnemyState.MOVE);
+            // 나의 앞방향과 Player 를 향하는 방향의 각도를 구하자.
+            float angle = Vector3.Angle(transform.forward, player.transform.position - transform.position);
+            print(angle);
+            // 만약에 그 각도가 나의 시야각보다 작으면
+            if(angle < viewAngle)
+            {
+                // MOVE 상태로 전환
+                ChangeState(EEnemyState.MOVE);
+            }
         }
     }
 
@@ -162,14 +181,17 @@ public class Enemy : MonoBehaviour
         // 그렇지 않으면
         else
         {
-            // Player 를 향하는 방향 구하자.
-            Vector3 dir = player.transform.position - transform.position;
-            dir.y = 0;
-            dir.Normalize();
-            // 나의 앞방향을 dir 로 하자.
-            transform.forward = dir;
-            // 그 방향으로 이동하자.
-            transform.position += dir * moveSpeed * Time.deltaTime;
+            // 목적지로 이동!
+            nav.SetDestination(player.transform.position);
+
+            //// Player 를 향하는 방향 구하자.
+            //Vector3 dir = player.transform.position - transform.position;
+            //dir.y = 0;
+            //dir.Normalize();
+            //// 나의 앞방향을 dir 로 하자.
+            //transform.forward = dir;
+            //// 그 방향으로 이동하자.
+            //transform.position += dir * moveSpeed * Time.deltaTime;
         }        
     }
 
