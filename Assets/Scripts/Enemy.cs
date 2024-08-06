@@ -61,6 +61,10 @@ public class Enemy : MonoBehaviour
         HPSystem hpSystem = GetComponent<HPSystem>();
         // 가져온 컴포넌트에서 OnDie 함수를 등록
         hpSystem.onDie = OnDie;
+
+        // viewAngle 값을 radian 으로 변경 후 cos 값으로 변경
+        viewAngle = viewAngle * Mathf.Deg2Rad;
+        viewAngle = Mathf.Cos(viewAngle);
     }
 
     void Update()
@@ -151,10 +155,20 @@ public class Enemy : MonoBehaviour
         if(dist < traceRange)
         {
             // 나의 앞방향과 Player 를 향하는 방향의 각도를 구하자.
-            float angle = Vector3.Angle(transform.forward, player.transform.position - transform.position);
-            print(angle);
+            // 두벡터의 사이각 을 구하자.
+            Vector3 toPlayer = player.transform.position - transform.position;
+            // 각도 = Arc cos (v1 과 v2 의 내적);
+            float dot = Vector3.Dot(transform.forward, toPlayer.normalized);
+            // 반환되는 각도는 radian 값이다.
+            float angle = Mathf.Acos(dot);
+            // radian 각도를 degree 로 바꾸자.
+            angle = angle * Mathf.Rad2Deg;
+
+            //float angle = Vector3.Angle(transform.forward, player.transform.position - transform.position);
+
             // 만약에 그 각도가 나의 시야각보다 작으면
-            if(angle < viewAngle)
+            //if(angle < viewAngle)
+            if(dot > viewAngle)
             {
                 // MOVE 상태로 전환
                 ChangeState(EEnemyState.MOVE);
