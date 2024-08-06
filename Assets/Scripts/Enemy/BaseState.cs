@@ -1,21 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Rendering.InspectorCurveEditor;
+using UnityEngine.AI;
 
 public class BaseState 
 {
     protected StateManager stateMgr;
-
-    // 플레이어 게임오젝트
-    protected GameObject player;
-
-    // 인지 범위
-    protected float traceRange = 8;
-    // 공격 범위
-    protected float attakRange = 2;
-    // 이동 속력
-    protected float moveSpeed = 3;
+       
 
     protected Animator anim;
 
@@ -23,19 +14,23 @@ public class BaseState
 
     protected HPSystem hpSystem;
 
+    protected NavMeshAgent nav;
+
     public BaseState(StateManager sm)
     {
         stateMgr = sm;
-        player = GameObject.Find("Player");
         anim = sm.GetComponentInChildren<Animator>();
+        nav = sm.GetComponent<NavMeshAgent>();
 
         hpSystem = sm.GetComponent<HPSystem>();
         // 가져온 컴포넌트에서 OnDie 함수를 등록
-        hpSystem.onDie = OnDie;
+        hpSystem.onDie = stateMgr.OnDie;
     }
     public virtual void Entry()
     {
         currTime = 0;
+        nav.isStopped = true;
+        nav.velocity = Vector3.zero;
     }
 
     public virtual void Update()
@@ -50,27 +45,7 @@ public class BaseState
 
     protected StateManager.EEnemyState DecideStateByDist()
     {
-        // 만약에 Player 와 거리가 attakRange 보다 작으면
-        float dist = Vector3.Distance(
-            player.transform.position,
-            stateMgr.transform.position);
-        if (dist < attakRange)
-        {
-            stateMgr.ChangeState(StateManager.EEnemyState.ATTACK);
-        }
-        // 그렇지 않고 인지범위 보다 작으면
-        else if (dist < traceRange)
-        {
-            // 이동 상태로 전환
-            stateMgr.ChangeState(StateManager.EEnemyState.MOVE);
-        }
-        // 그렇지 않고 인지범위 보다 크면
-        else
-        {
-            // 대기상태로 전환
-            stateMgr.ChangeState(StateManager.EEnemyState.IDLE);
-        }
-        return stateMgr.GetCurrState;
+        return stateMgr.DecideStateByDist();        
     }
 
     protected bool IsDelayComplete(float delayTime)
@@ -89,10 +64,5 @@ public class BaseState
         // 그렇지 않으면       
         // false 반환
         return false;
-    }
-
-    void OnDie()
-    {
-        stateMgr.ChangeState(StateManager.EEnemyState.DIE);
-    }
+    }    
 }

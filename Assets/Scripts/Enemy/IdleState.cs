@@ -27,6 +27,12 @@ public class IdleState : BaseState
     {
         base.Update();
 
-        DecideStateByDist();        
+        if(DecideStateByDist() == StateManager.EEnemyState.IDLE)
+        {
+            if(IsDelayComplete(2))
+            {
+                stateMgr.ChangeState(StateManager.EEnemyState.PATROL);
+            }
+        }
     }
 }
