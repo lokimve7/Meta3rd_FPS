@@ -14,6 +14,8 @@ public class PlayerFire : MonoBehaviour
     // 폭탄 공장(Prefab)
     public GameObject bombFactory;
 
+    PlayerMove playerMove;
+
     // 애니메이터
     Animator anim;
 
@@ -23,6 +25,7 @@ public class PlayerFire : MonoBehaviour
     void Start()
     {
         anim = GetComponentInChildren<Animator>();
+        playerMove = GetComponent<PlayerMove>();
 
         // 마우스 잠그자.
         Cursor.lockState = CursorLockMode.Locked;
@@ -33,12 +36,14 @@ public class PlayerFire : MonoBehaviour
         // 마우스 왼쪽 버튼을 누르면
         if(Input.GetMouseButtonDown(0))
         {
+            SetRun(false);
             FireRay();
         }
 
         // 마우스 오른쪽 버튼을 누르면
         if(Input.GetMouseButtonDown(1))
         {
+            SetRun(false);
             // Aim 모드 (animator "Aim" 파라미터 값을 true)
             isAimMode = true;
             //anim.SetBool("Aim", true);
@@ -52,10 +57,20 @@ public class PlayerFire : MonoBehaviour
             //anim.SetBool("Aim", false);
         }
 
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            SetRun(true);
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            SetRun(false);
+        }
+
         // isAimMode 에 따라서 animator 의 Aiming 값을 변경
         // isAimMode == true 이면 Aiming 값을 0 ---> 1 스르륵 변경
         // isAimMode == false 이면 Aiming 값을 1 ---> 0 스르륵 변경
         anim.SetFloat("Aiming", isAimMode ? 1 : 0, 0.25f * 0.3f, Time.deltaTime);
+        anim.SetFloat("Movement", playerMove.IsMoving() ? 1 : 0, 0.25f * 0.3f, Time.deltaTime);
 
 
         // 2번키를 누르면
@@ -63,6 +78,12 @@ public class PlayerFire : MonoBehaviour
         {
             FireBomb();
         }
+    }
+
+    void SetRun(bool isRun)
+    {
+        playerMove.SetMoveSpeed(isRun);
+        anim.SetBool("Run", isRun);
     }
 
     void FireBomb()
@@ -77,15 +98,11 @@ public class PlayerFire : MonoBehaviour
 
     void FireRay()
     {
-        //// Fire 총 애니 이름 설정
-        //string fireName = "Fire";
-        //// Aim 모드면 총 애니 이름을  Aim_Fire 로
-        //if(isAimMode)
-        //{
-        //    fireName = "Aim_Fire";
-        //}
-        //// 총 쏘는 애니메이션 실행
-        //anim.CrossFade(fireName, 0.01f, 0, 0);
+        // Fire 총 애니 이름 설정
+        string fireName = "Fire";
+        
+        // 총 쏘는 애니메이션 실행
+        anim.CrossFade(fireName, 0.01f, 0, 0);
 
         // 카메라 위치에서 카메라 앞방향으로 향하는 Ray 를 만들자.
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);

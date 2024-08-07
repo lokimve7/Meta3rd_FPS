@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 // 스페이스바를 누르면 점프를 하고 싶다.
@@ -8,7 +7,12 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     // 이동 속력
-    public float moveSpeed = 5;
+    public float walkSpeed = 5;
+    public float runSpeed = 10;
+    float moveSpeed;
+
+    bool isMoving;
+
     // Character Controller
     public CharacterController cc;
 
@@ -33,6 +37,8 @@ public class PlayerMove : MonoBehaviour
 
     void Start()
     {
+        moveSpeed = walkSpeed;
+                
         // Character Controller 가져오자
         cc = GetComponent<CharacterController>();
 
@@ -100,6 +106,9 @@ public class PlayerMove : MonoBehaviour
         Vector3 dirH = transform.right * h;
         Vector3 dirV = transform.forward * v;
         Vector3 dir = dirH + dirV;
+
+        isMoving = dir.sqrMagnitude > 0;
+
         // dir 의 크기를 1로 만들자. (벡터의 정규화)
         dir.Normalize();
 
@@ -136,6 +145,16 @@ public class PlayerMove : MonoBehaviour
         // 3. 그 방향으로 움직이자. (P = P0 + vt)
         //transform.position += dir * moveSpeed * Time.deltaTime;
         cc.Move(dir * moveSpeed * Time.deltaTime);
+    }
+
+    public bool IsMoving()
+    {
+        return isMoving;
+    }
+
+    public void SetMoveSpeed(bool isRun)
+    {
+        moveSpeed = isRun ? runSpeed : walkSpeed;        
     }
 
     public GameObject model;
