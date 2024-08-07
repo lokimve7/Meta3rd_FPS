@@ -22,6 +22,8 @@ public class PlayerFire : MonoBehaviour
     // Aim 모드인지 여부
     bool isAimMode;
 
+    bool isReloading;
+
     void Start()
     {
         anim = GetComponentInChildren<Animator>();
@@ -33,6 +35,8 @@ public class PlayerFire : MonoBehaviour
 
     void Update()
     {
+        if (isReloading) return;
+        
         // 마우스 왼쪽 버튼을 누르면
         if(Input.GetMouseButtonDown(0))
         {
@@ -66,6 +70,12 @@ public class PlayerFire : MonoBehaviour
             SetRun(false);
         }
 
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            isReloading = true;
+            anim.SetTrigger("Reload");
+        }
+
         // isAimMode 에 따라서 animator 의 Aiming 값을 변경
         // isAimMode == true 이면 Aiming 값을 0 ---> 1 스르륵 변경
         // isAimMode == false 이면 Aiming 값을 1 ---> 0 스르륵 변경
@@ -82,8 +92,20 @@ public class PlayerFire : MonoBehaviour
 
     void SetRun(bool isRun)
     {
-        playerMove.SetMoveSpeed(isRun);
+        if (isRun == false)
+        {
+            playerMove.SetMoveSpeed(isRun);
+        }
         anim.SetBool("Run", isRun);
+    }
+    public void SetMoveSpeedByAnimationEvent()
+    {
+        playerMove.SetMoveSpeed(true);
+    }
+
+    public void OnReloadComplete()
+    {
+        isReloading = false;
     }
 
     void FireBomb()
