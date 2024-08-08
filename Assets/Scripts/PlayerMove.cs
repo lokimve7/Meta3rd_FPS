@@ -8,7 +8,15 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     // 이동 속력
-    public float moveSpeed = 5;
+    float moveSpeed;
+    // 걷는 속력
+    public float walkSpeed = 5;
+    // 뛰는 속력
+    public float runSpeed = 10;
+
+    // 움직이고 있는지? 
+    public bool isMoving;
+
     // Character Controller
     public CharacterController cc;
 
@@ -31,10 +39,19 @@ public class PlayerMove : MonoBehaviour
     // 움직여야 하는 거리
     float moveDist;
 
+    // Animator 컴포넌트
+    Animator anim;
+
     void Start()
     {
+        // 이동속력을 걷는속력으로 설정
+        moveSpeed = walkSpeed;
+
         // Character Controller 가져오자
         cc = GetComponent<CharacterController>();
+
+        // Animator 가져오자
+        anim = GetComponentInChildren<Animator>();
 
         // HPSystem 을 가져오자.
         HPSystem hpSystem = GetComponent<HPSystem>();
@@ -44,6 +61,8 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
+        WalkRun();
+
         WASD_Move();
 
         //Click_Move();
@@ -100,6 +119,10 @@ public class PlayerMove : MonoBehaviour
         Vector3 dirH = transform.right * h;
         Vector3 dirV = transform.forward * v;
         Vector3 dir = dirH + dirV;
+
+        // 움직이지고 있는지 판별
+        isMoving = dir.sqrMagnitude > 0;
+
         // dir 의 크기를 1로 만들자. (벡터의 정규화)
         dir.Normalize();
 
@@ -135,8 +158,31 @@ public class PlayerMove : MonoBehaviour
 
         // 3. 그 방향으로 움직이자. (P = P0 + vt)
         //transform.position += dir * moveSpeed * Time.deltaTime;
-        cc.Move(dir * moveSpeed * Time.deltaTime);
+        cc.Move(dir * moveSpeed * Time.deltaTime);          
     }
+
+    void WalkRun()
+    {
+        // 왼쪽 Shift 키를 누르면 
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            SetWalkRun(true);
+        }
+        // 왼쪽 Shift 키를 떼면
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            SetWalkRun(false);
+        }
+    }
+
+    public void SetWalkRun(bool isRun)
+    {
+        // isRun 에 따라서 MoveSpeed 변경
+        moveSpeed = isRun ? runSpeed : walkSpeed;
+        // isRun 에 따라서 애니메이션도 변경
+        anim.SetBool("Run", isRun);
+    }
+
 
     public GameObject model;
     public void Die()

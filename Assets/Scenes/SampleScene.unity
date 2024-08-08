@@ -172,7 +172,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69b7f5644217b7749afbc6c33f65dd5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  walkSpeed: 5
+  runSpeed: 10
+  isMoving: 0
   cc: {fileID: 149812921}
   jumpPower: 3
   jumpMaxCnt: 2
@@ -837,6 +839,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &624011325 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0fe9c536e22c3dc4daec6b97fb55c263,
+    type: 3}
+  m_PrefabInstance: {fileID: 1173125019}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &624011327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 624011325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd0b8ca12858d045b109f74d0316efd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &736580211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1256,7 +1276,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0fe9c536e22c3dc4daec6b97fb55c263,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 624011327}
   m_SourcePrefab: {fileID: 100100000, guid: 0fe9c536e22c3dc4daec6b97fb55c263, type: 3}
 --- !u!1 &1550847354
 GameObject:

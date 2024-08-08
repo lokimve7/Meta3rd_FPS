@@ -38,7 +38,11 @@ public class HPSystem : MonoBehaviour
         currHP += value;
 
         // HPBar UI 갱신 (0 ~ 1)
-        hpBar.fillAmount = currHP / maxHP;
+        if(hpBar != null)
+        {
+            hpBar.fillAmount = currHP / maxHP;
+        }
+        
 
         // 만약에 현재 HP 가 0보다 작거나 같으면
         if (currHP <= 0)

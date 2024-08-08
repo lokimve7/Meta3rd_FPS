@@ -211,18 +211,23 @@ public class Enemy : MonoBehaviour
 
     // 공격 상태일때 계속 해야 하는 동작
     void UpdateAttack()
-    {
-        // 플레이어를 공격하자.
-        print("공격! 공격!");
-        // 플레이어 HP 줄이자.
-        HPSystem hpSystem = player.GetComponent<HPSystem>();
-        hpSystem.UpdateHP(-2);
+    {       
         // 공격 Animation 실행
         anim.SetTrigger(currState.ToString());
 
         // 상태를 ATTACK_DELAY 상태로 전환
         ChangeState(EEnemyState.ATTACK_DELAY);        
     }
+
+    public void RealAttack()
+    {
+        // 플레이어를 공격하자.
+        print("공격! 공격!");
+        // 플레이어 HP 줄이자.
+        HPSystem hpSystem = player.GetComponent<HPSystem>();
+        hpSystem.UpdateHP(-2);
+    }
+    
 
     void DecideStateByDist()
     {
