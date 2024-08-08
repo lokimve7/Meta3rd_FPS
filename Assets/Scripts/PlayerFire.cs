@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-public class PlayerFire : MonoBehaviour
+public class PlayerFire : MonoBehaviour, IAnimationInterface
 {
     // 총알 파편 효과 공장(Prefab)
     public GameObject bulletImpactFactory;
@@ -14,11 +14,16 @@ public class PlayerFire : MonoBehaviour
     // 폭탄 공장(Prefab)
     public GameObject bombFactory;
 
-    // 애니메이터
+    // Player 애니메이터
     Animator anim;
+    // AR 애니메이터
+    public Animator arAnim;
 
     // Aim 모드인지 여부
     bool isAimMode;
+
+    // 장전 여부
+    public bool isReloading;
 
     // PlayerMove 컴포넌트
     PlayerMove playerMove;
@@ -36,6 +41,9 @@ public class PlayerFire : MonoBehaviour
 
     void Update()
     {
+        // 장전할 때 함수를 나가자.
+        if (isReloading) return;
+
         // 마우스 왼쪽 버튼을 누르면
         if(Input.GetMouseButtonDown(0))
         {
@@ -61,6 +69,15 @@ public class PlayerFire : MonoBehaviour
             // Aim 모드 해제 (animator "Aim" 파라미터 값을 false)
             isAimMode = false;
             //anim.SetBool("Aim", false);
+        }
+
+        // R 키누르면
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            // 장전
+            isReloading = true;
+            anim.SetTrigger("Reload");
+            arAnim.SetTrigger("Reload");
         }
 
         // isAimMode 에 따라서 animator 의 Aiming 값을 변경
@@ -142,4 +159,25 @@ public class PlayerFire : MonoBehaviour
         }
     }
 
- }
+    string GetAnimationNodeName(AnimatorStateInfo stateInfo)
+    {
+        if (stateInfo.IsName("Reload")) return "Reload";
+        if (stateInfo.IsName("Fire")) return "Fire";
+
+        return "xxxxxxx";
+    }
+
+    public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        print("name : " + name + ", " + GetAnimationNodeName(stateInfo) + ", in OnStateEnter");
+    }
+
+    public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        print("name : " + name + ", " + GetAnimationNodeName(stateInfo) + ", in OnStateExit");
+        if(stateInfo.IsName("Reload"))
+        {
+            isReloading = false;
+        }
+    }
+}
