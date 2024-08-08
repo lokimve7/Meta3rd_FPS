@@ -238,6 +238,8 @@ MonoBehaviour:
     m_Bits: 951
   bombFactory: {fileID: 6522120467678943997, guid: acd68ebefa61c524fb175a1fc98b4118,
     type: 3}
+  arAnim: {fileID: 767974821}
+  isReloading: 0
 --- !u!114 &149812923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1779,10 +1781,50 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 366576717096258345, guid: a01823052e3db5f42adcaed2c938b678,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 366576717096258345, guid: a01823052e3db5f42adcaed2c938b678,
+        type: 3}
+      propertyPath: m_UpdateWhenOffscreen
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 598726761337017644, guid: a01823052e3db5f42adcaed2c938b678,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598726761337017644, guid: a01823052e3db5f42adcaed2c938b678,
+        type: 3}
+      propertyPath: m_UpdateWhenOffscreen
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2422928982311321476, guid: a01823052e3db5f42adcaed2c938b678,
         type: 3}
       propertyPath: m_Name
       value: FPSModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618783513274849179, guid: a01823052e3db5f42adcaed2c938b678,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618783513274849179, guid: a01823052e3db5f42adcaed2c938b678,
+        type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4828021630514073813, guid: a01823052e3db5f42adcaed2c938b678,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4828021630514073813, guid: a01823052e3db5f42adcaed2c938b678,
+        type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6523683955893699892, guid: a01823052e3db5f42adcaed2c938b678,
         type: 3}
