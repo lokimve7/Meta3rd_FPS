@@ -92,7 +92,7 @@ public class Enemy : MonoBehaviour
                 break;
 
             case EEnemyState.DIE:
-                //UpdateDie();
+                UpdateDie();
                 break;
         }
     }
@@ -128,12 +128,23 @@ public class Enemy : MonoBehaviour
 
             case EEnemyState.ATTACK:
                 //anim.SetTrigger(currState.ToString());
+                StartCoroutine(Delay(attakDelayTime, () => {
+                    DecideStateByDist();
+                }, (float time) => {
+                    print(time);
+                }));
                 break;
             case EEnemyState.DAMAGE:
                 { 
                     HPSystem hpSystem = GetComponent<HPSystem>();
                     hpSystem.UpdateHP(-1);
                     anim.SetTrigger("DAMAGE");
+
+                    StartCoroutine(Delay(damageDelay, () => {
+                        DecideStateByDist();
+                    }, (float time) => {
+                        print(time);
+                    }));
                 }
                 break;
             case EEnemyState.DIE:
@@ -141,10 +152,22 @@ public class Enemy : MonoBehaviour
                     CapsuleCollider coll = GetComponent<CapsuleCollider>();
                     coll.enabled = false;
                     anim.SetTrigger("DIE");
+                    StartCoroutine(Delay(dieDelayTime, () => {
+                        Destroy(gameObject);
+                    }, (float time) => {
+                        print(time);
+                    }));
                 }
                 break;
         }
     }
+
+    void OnComplete(int number)
+    {
+        DecideStateByDist();
+    }
+
+    
 
     // 대기 상태일때 계속 해야 하는 동작
     void UpdateIdle()
@@ -253,11 +276,21 @@ public class Enemy : MonoBehaviour
 
     private void UpdateAttackDelay()
     {
-        // 공격 Delay 시간만큼 기다렸다가
-        if (IsDelayComplete(attakDelayTime))
-        {
-            DecideStateByDist();
-        }
+        //// 공격 Delay 시간만큼 기다렸다가
+        //if (IsDelayComplete(attakDelayTime))
+        //{
+        //    DecideStateByDist();
+        //}
+    }
+
+   
+    IEnumerator Delay(float delayTime, Action onDelayComplete, Action<float> testDelegate)
+    {
+        yield return new WaitForSeconds(delayTime);
+
+        onDelayComplete();
+
+        testDelegate(delayTime);
     }
 
 
@@ -265,11 +298,11 @@ public class Enemy : MonoBehaviour
     public float damageDelay = 1;
     void UpdateDamage()
     {
-        // 피격 시간 만큼 기다렸다가        
-        if(IsDelayComplete(damageDelay))
-        {
-            DecideStateByDist();
-        }
+        //// 피격 시간 만큼 기다렸다가        
+        //if(IsDelayComplete(damageDelay))
+        //{
+        //    DecideStateByDist();
+        //}
     }
 
     public void OnDamaged()
@@ -293,10 +326,10 @@ public class Enemy : MonoBehaviour
         // 밑으로 내려가자.
         transform.position += Vector3.down * downSpeed * Time.deltaTime;
         // 2초 뒤에 없어지자.
-        if(IsDelayComplete(dieDelayTime))
-        {
-            Destroy(gameObject);
-        }
+        //if(IsDelayComplete(dieDelayTime))
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 
     bool IsDelayComplete(float delayTime)
