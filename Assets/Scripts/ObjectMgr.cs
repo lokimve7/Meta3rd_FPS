@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 public class ObjectMgr : MonoBehaviour
 {
     // Enemy 공장(Prefab)
